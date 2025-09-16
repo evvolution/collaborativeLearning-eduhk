@@ -16,10 +16,25 @@
           
         </template> -->
       <t-card style="margin-bottom: 6px;">
-        <t-link theme="primary" @click="handle_notePresend(JSON.parse(row.content).text)">
-          <!-- {{ getFormedTimeForList(JSON.parse(row.content).text) }} -->
-          {{JSON.parse(row.content).text}}
-        </t-link>
+        <t-space direction="vertical">
+          <t-link theme="primary" @click="handle_notePresend(JSON.parse(row.content).text)">
+            <!-- {{ getFormedTimeForList(JSON.parse(row.content).text) }} -->
+            {{JSON.parse(row.content).text}}
+          </t-link>
+          <t-link 
+            v-if="JSON.parse(row.content).file" 
+            theme="primary" 
+            :href="JSON.parse(row.content).file.url"
+          >
+            <template #content>
+              <t-space align="center">
+                <t-popup :content="JSON.parse(row.content).file.name" placement="right" show-arrow >
+                  <t-icon name="file-attachment" size="20"/>
+                </t-popup>
+              </t-space>
+            </template>
+          </t-link>
+        </t-space>
       </t-card>
       <!-- </t-popup> -->
   

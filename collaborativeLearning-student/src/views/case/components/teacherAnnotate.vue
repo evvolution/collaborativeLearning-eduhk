@@ -15,25 +15,48 @@
         <template #content>
 
         </template> -->
-      <t-link theme="primary" @click="handle_notePresend(JSON.parse(row.content).text)">
-         <!-- {{ getFormedTimeForList(JSON.parse(row.content).text) }} -->
-         {{JSON.parse(row.content).text}}
-      </t-link>
+      <t-space direction="vertical">
+        <t-link theme="primary" @click="handle_notePresend(JSON.parse(row.content).text)">
+          <!-- {{ getFormedTimeForList(JSON.parse(row.content).text) }} -->
+          {{JSON.parse(row.content).text}}
+        </t-link>
+        <t-link 
+          v-if="JSON.parse(row.content).file" 
+          theme="primary" 
+          :href="JSON.parse(row.content).file.url"
+        >
+          <template #content>
+            <t-space align="center">
+              <t-popup :content="JSON.parse(row.content).file.name" placement="right" show-arrow >
+                <t-icon name="file-attachment" size="20"/>
+              </t-popup>
+            </t-space>
+          </template>
+        </t-link>
       <!-- </t-popup> -->
-      <t-descriptions title="Additional Infomation" :bordered="false" :column="3">
-        <t-descriptions-item label="ID">{{row.id}}</t-descriptions-item>
-        <t-descriptions-item label="Creator">
-          <t-tag 
-            :theme="userStore?.userInfo?.name == JSON.parse(row.content).creator ? 'primary' : 'warning'" 
+        <!-- <t-descriptions title="Additional Infomation" :bordered="false" :column="3">
+          <t-descriptions-item label="ID">{{row.id}}</t-descriptions-item>
+          <t-descriptions-item label="Creator">
+            <t-tag 
+              :theme="userStore?.userInfo?.name == JSON.parse(row.content).creator ? 'primary' : 'warning'" 
+              shape="round" 
+              :content="JSON.parse(row.content).creator"
+            ></t-tag>
+          </t-descriptions-item>
+          <t-descriptions-item label="Create Time">{{row.createTime}}</t-descriptions-item>
+        </t-descriptions> -->
+        <t-space align="center">
+          <t-tag  
             shape="round" 
-            :content="JSON.parse(row.content).creator"
+            :content="row.id"
           ></t-tag>
-        </t-descriptions-item>
-        <t-descriptions-item label="Create Time">{{row.createTime}}</t-descriptions-item>
-      </t-descriptions>
+          <!-- <h4>{{ JSON.parse(row.content).creator }}</h4> -->
+          {{row.createTime}}
+        </t-space>
+      </t-space>
     </template>
     <template #action="{ row }">
-      <t-space align="center">
+      <t-space align="center" direction="vertical">
         <t-popup v-if="row.shareToFactor == 0" trigger="hover" placement="bottom" content="Add To Case Factors">
           <t-icon name="heart" @click="addToResourcePlus(row, 2)" />
         </t-popup>
@@ -130,7 +153,7 @@ const columns = ref([
   // { colKey: 'id', title: 'ID', width: 80 },
   // { colKey: 'creator', title: 'Creator'},
   { colKey: 'content', title: 'Content'},
-  { colKey: 'action', title: 'Action', width: 100},
+  { colKey: 'action', title: 'Action', width: 15},
 ])
 
 // init

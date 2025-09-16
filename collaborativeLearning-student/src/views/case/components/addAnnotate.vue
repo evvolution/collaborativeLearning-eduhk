@@ -10,7 +10,7 @@
     size="30%"
   >
     <t-form :data="annotateData" label-align="top">
-      <t-form-item label="Start Time" name="startTime" requiredMark>
+      <t-form-item label="Start Time" name="startTime">
         <t-time-range-picker v-model="timeRange" />
       </t-form-item>
 
@@ -58,6 +58,7 @@ const closeAdd = () => {
 
 const annotateData = ref<any>({})
 const handle_add = () => {
+  let preJson = {}
   if (timeRange.value) {
     if (secondsSinceMidnight(timeRange.value[0]) > Number(props.caseVideoTime_full)) {
       timeRange.value = ''
@@ -66,43 +67,47 @@ const handle_add = () => {
       timeRange.value = ''
       return MessagePlugin.warning('Out of video time')
     }
-    let preJson = {
+    preJson = {
       text: `${timeRange.value[0]} ~ ${timeRange.value[1]} : ${annotateData.value.content}`,
       file: annotateAttachmentList.value[0],
       creator: userStore?.userInfo?.name
     }
-    annotateData.value.caseId = caseId
-    annotateData.value.type = 1
-    annotateData.value.opened = 0
-    annotateData.value.content = JSON.stringify(preJson)
-    addResources(annotateData.value)
-    .then((res: any)=> {
-      if (res.msg == 'success') {
-
-        annotateData.value.type = 3
-        addResources(annotateData.value)
-        .then((res: any)=> {
-          if (res.msg == 'success') {
-            annotateData.value = {}
-            closeAdd()
-            emitter.emit('freshNotes')
-            return MessagePlugin.success('Added Successfully')
-          }
-        })
-
-
-        // annotateData.value = {}
-        // closeAdd()
-        // emitter.emit('freshNotes')
-        // return MessagePlugin.success('Added Successfully')
-      }
-    })
-    .catch((err)=> {
-      console.error(err)
-    })
   } else {
-    return MessagePlugin.warning('Error Time Type')
+    preJson = {
+      text: `00:00:00 ~ 00:00:00 : ${annotateData.value.content}`,
+      file: annotateAttachmentList.value[0],
+      creator: userStore?.userInfo?.name
+    }
   }
+  annotateData.value.caseId = caseId
+  annotateData.value.type = 1
+  annotateData.value.opened = 0
+  annotateData.value.content = JSON.stringify(preJson)
+  addResources(annotateData.value)
+  .then((res: any)=> {
+    if (res.msg == 'success') {
+
+      annotateData.value.type = 3
+      addResources(annotateData.value)
+      .then((res: any)=> {
+        if (res.msg == 'success') {
+          annotateData.value = {}
+          closeAdd()
+          emitter.emit('freshNotes')
+          return MessagePlugin.success('Added Successfully')
+        }
+      })
+
+
+      // annotateData.value = {}
+      // closeAdd()
+      // emitter.emit('freshNotes')
+      // return MessagePlugin.success('Added Successfully')
+    }
+  })
+  .catch((err)=> {
+    console.error(err)
+  })
 }
 
 // const getAnnotateStartTime = () => {

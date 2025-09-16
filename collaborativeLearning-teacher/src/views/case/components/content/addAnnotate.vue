@@ -10,7 +10,7 @@
     size="30%"
   >
     <t-form :data="annotateData" label-align="top">
-      <t-form-item label="Time" name="startTime" requiredMark>
+      <t-form-item label="Time" name="startTime">
         <t-time-range-picker v-model="timeRange" />
         <!-- <t-space direction="vertical"> -->
           <!-- <t-input-adornment> -->
@@ -81,33 +81,38 @@ const timeRange = ref<any>()
 
 const annotateData = ref<any>({})
 const handle_add = () => {
+  let preJson = {}
   if (timeRange.value) {
-    let preJson = {
+    preJson = {
       // text: `${Number(props.caseVideoTime_s).toFixed(0)}s   ~ ${Number(props.caseVideoTime_e).toFixed(0)}s : ${annotateData.value.content}`,
       text: `${timeRange.value[0]} ~ ${timeRange.value[1]} : ${annotateData.value.content}`,
       file: annotateAttachmentList.value[0],
       creator: userStore?.userInfo?.name
     }
-    annotateData.value.caseId = caseId
-    annotateData.value.type = 1
-    annotateData.value.opened = 0
-    annotateData.value.content = JSON.stringify(preJson)
-    addResources(annotateData.value)
-    .then((res: any)=> {
-      if (res.msg == 'success') {
-        annotateData.value = {}
-        closeAdd()
-        emitter.emit('freshNotes')
-        return MessagePlugin.success('Added Successfully')
-      }
-    })
-    .catch((err)=> {
-      console.error(err)
-    })
   } else {
-    return MessagePlugin.warning('Error Time Type')
+    preJson = {
+      // text: `${Number(props.caseVideoTime_s).toFixed(0)}s   ~ ${Number(props.caseVideoTime_e).toFixed(0)}s : ${annotateData.value.content}`,
+      text: `00:00:00 ~ 00:00:00 : ${annotateData.value.content}`,
+      file: annotateAttachmentList.value[0],
+      creator: userStore?.userInfo?.name
+    }
   }
-
+  annotateData.value.caseId = caseId
+  annotateData.value.type = 1
+  annotateData.value.opened = 0
+  annotateData.value.content = JSON.stringify(preJson)
+  addResources(annotateData.value)
+  .then((res: any)=> {
+    if (res.msg == 'success') {
+      annotateData.value = {}
+      closeAdd()
+      emitter.emit('freshNotes')
+      return MessagePlugin.success('Added Successfully')
+    }
+  })
+  .catch((err)=> {
+    console.error(err)
+  })
 }
 const getAnnotateStartTime = () => {
   emit('getAnnotateStartTime')

@@ -35,6 +35,23 @@
         </t-typography-paragraph>
         <t-typography-text v-else copyable>{{JSON.parse(row.content).text}}</t-typography-text>
       </template>
+
+      <template #attachment="{ row }">
+        <t-link 
+          v-if="JSON.parse(row.content).file" 
+          theme="primary" 
+          :href="JSON.parse(row.content).file.url"
+        >
+          <template #content>
+            <t-space align="center">
+              <t-popup :content="JSON.parse(row.content).file.name" placement="right" show-arrow >
+                <t-icon name="file-attachment" size="32"/>
+              </t-popup>
+            </t-space>
+          </template>
+        </t-link>
+        <template v-else>-</template>
+      </template>
       <template #creator="{ row }">
         <t-tag v-if="row.teacherName" theme="primary" shape="round" variant="outline" :content="row.teacherName"></t-tag>
         <t-tag v-else theme="default" shape="round" :content="row.memberName"></t-tag>
@@ -145,6 +162,7 @@ const onPageChange = (pageInfo: any) => {
 const columns = [
   { colKey: 'id', title: 'Id' },
   { colKey: 'content', title: 'Content'},
+  { colKey: 'attachment', title: 'Attachment' },
   { colKey: 'createTime', title: 'Create Time' },
   { colKey: 'creator', title: 'Creator' },
   { colKey: 'groupName', title: 'Group' },
