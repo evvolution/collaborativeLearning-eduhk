@@ -4,6 +4,7 @@
     :closeBtn="false"
     :closeOnOverlayClick="false"
     top="50px"
+    width="50vw"
     @opened="getEditDetail"
   >
     <template #header>
@@ -12,44 +13,58 @@
       </t-space>
     </template>
     <t-form :data="editCaseData" label-align="top">
-      <t-form-item label="Title" name="name" requiredMark>
-        <t-input v-model="editCaseData.name" clearable></t-input>
-      </t-form-item>
-      <t-form-item label="Description" name="description" requiredMark>
-        <t-textarea v-model="editCaseData.description" :autosize="{ minRows: 3, maxRows: 5 }" placeholder="please enter desc." :maxlength="200"></t-textarea>
-      </t-form-item>
-
-      <t-form-item label="Uploaded Files" name="mix" v-if="!isReUpload">
+      <t-space style="width: 100%;">
         <t-space direction="vertical" style="width: 100%;">
-          <t-tag default="Video" theme="primary" variant="outline"/>
-          <video :src="editCaseData.video" controls style="width: 100%; height: 200px;"></video>
-          <t-tag default="Attachment(s)" theme="primary" variant="outline"/>
-          <t-space align="center" breakLine>
-            <t-button variant="text" v-for="item in editCaseData.attachmentList" @click="getAttachment(item)" :content="item.name">
-              <template #icon><t-icon name="file-attachment" ></t-icon></template>
-            </t-button>
+          <t-form-item label="Title" name="name" requiredMark>
+            <t-input v-model="editCaseData.name" clearable></t-input>
+          </t-form-item>
+          <t-form-item label="Description" name="description" requiredMark>
+            <t-textarea v-model="editCaseData.description" :autosize="{ minRows: 3, maxRows: 5 }" placeholder="please enter desc." :maxlength="200"></t-textarea>
+          </t-form-item>
+
+          <t-form-item label="Sno" name="sno" requiredMark>
+            <t-input v-model="editCaseData.sno" tips="Sort by number in descending order."></t-input>
+          </t-form-item>
+          <t-form-item label="State" name="state" requiredMark>
+            <t-radio-group v-model="editCaseData.state">
+              <t-radio :value="1">Enable</t-radio>
+              <t-radio :value="0">Disable</t-radio>
+            </t-radio-group>
+          </t-form-item>
+        </t-space>  
+
+        <t-form-item label="Uploaded Files" name="mix" v-if="!isReUpload">
+          <t-space direction="vertical" style="width: 100%;">
+            <t-tag default="Video" theme="primary" variant="outline"/>
+            <video :src="editCaseData.video" controls style="width: 100%; height: 200px;"></video>
+            <t-tag default="Attachment(s)" theme="primary" variant="outline"/>
+            <t-space align="center" breakLine>
+              <t-button variant="text" v-for="item in editCaseData.attachmentList" @click="getAttachment(item)" :content="item.name">
+                <template #icon><t-icon name="file-attachment" ></t-icon></template>
+              </t-button>
+            </t-space>
+            <t-button content="Clear All Files And Reupload" block theme="warning" @click="clearUploadedFiles"/>
           </t-space>
-          <t-button content="Clear All Files And Reupload" block theme="warning" @click="clearUploadedFiles"/>
-        </t-space>
-      </t-form-item>
-      <template v-else>
-        <t-form-item label="Video" name="video" requiredMark>
-          <MyUploader 
-            ref="videoUploader" 
-            :settings="uploaderSettingVideo" 
-            @handle_upload-list-trans="getFileData_video" 
-            @handle_get-upload-url="getFilePath_video"
-          />
         </t-form-item>
-        <t-form-item label="Attachment(s)" name="attachment">
-          <MyUploader 
-            ref="attachmentUploader" 
-            :settings="uploaderSettingAattachment"
-            @handle_upload-list-trans="getFileData_attachment" 
-            @handle_get-upload-url="getFilePath_attachment" 
-          />
-        </t-form-item>
-      </template>
+        <template v-else>
+          <t-form-item label="Video" name="video" requiredMark>
+            <MyUploader 
+              ref="videoUploader" 
+              :settings="uploaderSettingVideo" 
+              @handle_upload-list-trans="getFileData_video" 
+              @handle_get-upload-url="getFilePath_video"
+            />
+          </t-form-item>
+          <t-form-item label="Attachment(s)" name="attachment">
+            <MyUploader 
+              ref="attachmentUploader" 
+              :settings="uploaderSettingAattachment"
+              @handle_upload-list-trans="getFileData_attachment" 
+              @handle_get-upload-url="getFilePath_attachment" 
+            />
+          </t-form-item>
+        </template>
+      </t-space>
     </t-form>
     <template #footer>
       <t-space align="center">
@@ -76,6 +91,7 @@ const props = defineProps({
 const editCaseData = ref<any>({
   name: '',
   description: '',
+  sno: 0,
   // startTime: '',
   // endTime: '',
   video: '',

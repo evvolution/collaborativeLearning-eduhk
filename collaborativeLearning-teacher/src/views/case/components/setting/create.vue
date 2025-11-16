@@ -16,6 +16,9 @@
           <t-form-item label="Description" name="description" requiredMark>
             <t-textarea v-model="newCaseData.description" :autosize="{ minRows: 3, maxRows: 5 }" placeholder="please enter desc." :maxlength="200"></t-textarea>
           </t-form-item>
+          <t-form-item label="Sno" name="sno" requiredMark>
+            <t-input v-model="newCaseData.sno" tips="Sort by number in descending order."></t-input>
+          </t-form-item>
           <!-- <t-form-item label="Period" name="period" requiredMark>
             <t-date-range-picker allow-input clearable @pick="onPick"/>
           </t-form-item> -->
@@ -70,6 +73,7 @@ const closeCreate = () => {
   newCaseData.value = {
     name: '',
     description: '',
+    sno: 0,
     video: '',
     attachmentList: []
   }
@@ -101,6 +105,7 @@ const uploaderSettingAattachment = ref<uploaderSettings>({
 const newCaseData: any = ref({
   name: '',
   description: '',
+  sno: 0,
   video: '',
   attachmentList: []
 })

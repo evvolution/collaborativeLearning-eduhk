@@ -38,6 +38,16 @@ export const updateNewCase = (params: any) => {
 }
 
 /**
+ * 删除案例
+ * @param id 
+ * @returns  
+ */
+export const deleteCase = (id: number) => {
+  return axios.post('/teacher/deleteCase?id=' + id, {})
+}
+
+
+/**
  * 获取案例作业
  * @param id 
  * @returns  

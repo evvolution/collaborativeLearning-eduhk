@@ -33,13 +33,12 @@
           </t-tag>
           <template v-if="row.closeByAdmin == 0">
             <t-popconfirm content="Are you sure to finish current case?" @confirm="manualCase(row, 1)">
-              <t-tag theme="danger" default="CLOSE" class="pointer-tag"></t-tag>
+              <t-tag theme="warning" default="CLOSE" class="pointer-tag"></t-tag>
             </t-popconfirm>
           </template>
           <template v-else>
-
             <t-popconfirm content="Are you sure to reboot current case?" @confirm="manualCase(row, 0)">
-              <t-tag theme="danger" variant="outline" class="pointer-tag" default="CLOSED"></t-tag>
+              <t-tag theme="warning" variant="outline" class="pointer-tag" default="CLOSED"></t-tag>
             </t-popconfirm>
           </template>
           <!-- <router-link :to="{ name: 'CaseDashboard', params: { id: row.id } }">
@@ -47,6 +46,11 @@
               <template #icon><t-icon name="dashboard" /></template>
             </t-tag>
           </router-link> -->
+          <t-popconfirm content="Are you sure to delete this case?" @confirm="deleteCaseById(row)">
+            <t-tag theme="danger" default="Delete" class="pointer-tag">
+              <template #icon><t-icon name="delete" /></template>
+            </t-tag>
+          </t-popconfirm>
         </t-space>
       </template>
     </t-table>
@@ -58,7 +62,7 @@
 
 <script setup lang="tsx">
 import { ref, onMounted } from 'vue'
-import { getCaseList, updateNewCase } from '@/api/modules/case'
+import { deleteCase, getCaseList, updateNewCase } from '@/api/modules/case'
 import create from './components/setting/create.vue'
 import edit from './components/setting/edit.vue'
 import { MessagePlugin } from 'tdesign-vue-next'
@@ -153,6 +157,22 @@ const manualCase = (data: any, type: any) => {
     console.error(err)
   })
 }
+
+const deleteCaseById = async (data: any) => {
+  let preData = data
+  preData.display = 0
+  try {
+    const res: any = await updateNewCase(preData)
+    if (res.code == 200) {
+      MessagePlugin.success(`${data.name} has been deleted`)
+      getCaseListData(1, 10)
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+
 
 onMounted(()=> {
   getCaseListData(1, 10)
